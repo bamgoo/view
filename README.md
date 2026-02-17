@@ -1,0 +1,2 @@
+# view
+bamgoo view module.
