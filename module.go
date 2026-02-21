@@ -10,6 +10,7 @@ import (
 
 func init() {
 	bamgoo.Mount(module)
+	module.RegisterDriver(bamgoo.DEFAULT, &defaultDriver{})
 }
 
 var module = &Module{

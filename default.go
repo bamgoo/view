@@ -14,10 +14,6 @@ import (
 	. "github.com/bamgoo/base"
 )
 
-func init() {
-	module.RegisterDriver(bamgoo.DEFAULT, &defaultDriver{})
-}
-
 type (
 	defaultDriver struct{}
 
