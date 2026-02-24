@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 
 	"github.com/bamgoo/bamgoo"
@@ -121,7 +121,7 @@ func (p *defaultParser) layoutParse() (string, error) {
 		if err != nil {
 			return "", err
 		}
-		bts, err := os.ReadFile(filename)
+		bts, err := p.readFile(filename)
 		if err != nil {
 			return "", fmt.Errorf("layout %s read error", p.layout)
 		}
@@ -164,9 +164,9 @@ func (p *defaultParser) bodyParse(name string, args ...Any) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		p.path = filepath.Dir(filename)
+		p.path = path.Dir(filename)
 
-		bts, err := os.ReadFile(filename)
+		bts, err := p.readFile(filename)
 		if err != nil {
 			return "", fmt.Errorf("view %s read error", name)
 		}
@@ -209,7 +209,7 @@ func (p *defaultParser) renderParse(name string, args ...Any) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		bts, err := os.ReadFile(filename)
+		bts, err := p.readFile(filename)
 		if err != nil {
 			return "", fmt.Errorf("render %s read error", name)
 		}
@@ -262,7 +262,7 @@ func (p *defaultParser) findLayoutFile(name string) (string, error) {
 	candidates = append(candidates, fmt.Sprintf("%s/%s.html", cfg.Root, name))
 
 	for _, f := range candidates {
-		if st, err := os.Stat(f); err == nil && !st.IsDir() {
+		if st, err := p.stat(f); err == nil && !st.IsDir() {
 			return f, nil
 		}
 	}
@@ -293,7 +293,7 @@ func (p *defaultParser) findBodyFile(name string) (string, error) {
 	candidates = append(candidates, fmt.Sprintf("%s/%s/%s/index.html", cfg.Root, cfg.Shared, name))
 
 	for _, f := range candidates {
-		if st, err := os.Stat(f); err == nil && !st.IsDir() {
+		if st, err := p.stat(f); err == nil && !st.IsDir() {
 			return f, nil
 		}
 	}
@@ -322,11 +322,25 @@ func (p *defaultParser) findRenderFile(name string) (string, error) {
 	candidates = append(candidates, fmt.Sprintf("%s/%s.html", cfg.Root, name))
 
 	for _, f := range candidates {
-		if st, err := os.Stat(f); err == nil && !st.IsDir() {
+		if st, err := p.stat(f); err == nil && !st.IsDir() {
 			return f, nil
 		}
 	}
 	return "", fmt.Errorf("render %s not exist", name)
+}
+
+func (p *defaultParser) stat(name string) (fs.FileInfo, error) {
+	if p.connection != nil && p.connection.instance != nil && p.connection.instance.FS != nil {
+		return fs.Stat(p.connection.instance.FS, name)
+	}
+	return os.Stat(name)
+}
+
+func (p *defaultParser) readFile(name string) ([]byte, error) {
+	if p.connection != nil && p.connection.instance != nil && p.connection.instance.FS != nil {
+		return fs.ReadFile(p.connection.instance.FS, name)
+	}
+	return os.ReadFile(name)
 }
 
 func (p *defaultParser) layoutHelper(name string, vals ...Any) string {
