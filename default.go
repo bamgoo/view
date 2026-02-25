@@ -330,15 +330,15 @@ func (p *defaultParser) findRenderFile(name string) (string, error) {
 }
 
 func (p *defaultParser) stat(name string) (fs.FileInfo, error) {
-	if p.connection != nil && p.connection.instance != nil && p.connection.instance.FS != nil {
-		return fs.Stat(p.connection.instance.FS, name)
+	if bamgoo.AssetFS() != nil {
+		return bamgoo.AssetStat(name)
 	}
 	return os.Stat(name)
 }
 
 func (p *defaultParser) readFile(name string) ([]byte, error) {
-	if p.connection != nil && p.connection.instance != nil && p.connection.instance.FS != nil {
-		return fs.ReadFile(p.connection.instance.FS, name)
+	if bamgoo.AssetFS() != nil {
+		return bamgoo.AssetFile(name)
 	}
 	return os.ReadFile(name)
 }

@@ -27,7 +27,7 @@ var module = &Module{
 }
 
 func SetFS(fsys fs.FS) {
-	module.SetFS(fsys)
+	bamgoo.AssetFS(fsys)
 }
 
 type (
@@ -40,7 +40,6 @@ type (
 
 		drivers map[string]Driver
 		helpers map[string]Helper
-		fsys    fs.FS
 
 		helperActions Map
 		config        Config
@@ -70,7 +69,6 @@ type (
 		conn    Connection
 		Config  Config
 		Setting Map
-		FS      fs.FS
 	}
 )
 
@@ -81,12 +79,6 @@ func (m *Module) Register(name string, value Any) {
 	case Helper:
 		m.RegisterHelper(name, v)
 	}
-}
-
-func (m *Module) SetFS(fsys fs.FS) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
-	m.fsys = fsys
 }
 
 func (m *Module) RegisterDriver(name string, driver Driver) {
@@ -222,7 +214,7 @@ func (m *Module) Open() {
 		panic("Invalid view driver: " + m.config.Driver)
 	}
 
-	inst := &Instance{Config: m.config, Setting: m.config.Setting, FS: m.fsys}
+	inst := &Instance{Config: m.config, Setting: m.config.Setting}
 	conn, err := driver.Connect(inst)
 	if err != nil {
 		panic("Failed to connect to view: " + err.Error())
