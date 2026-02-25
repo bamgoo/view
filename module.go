@@ -1,6 +1,7 @@
 package view
 
 import (
+	"fmt"
 	"io/fs"
 	"sync"
 	"time"
@@ -235,6 +236,11 @@ func (m *Module) Start() {
 		return
 	}
 	m.started = true
+	connCount := 0
+	if m.instance != nil && m.instance.conn != nil {
+		connCount = 1
+	}
+	fmt.Printf("bamgoo view module is running with %d connections, %d helpers.\n", connCount, len(m.helpers))
 }
 
 func (m *Module) Stop() {
