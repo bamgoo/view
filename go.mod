@@ -1,11 +1,11 @@
-module github.com/bamgoo/view
+module github.com/infrago/view
 
 go 1.25.3
 
 require (
-	github.com/bamgoo/bamgoo v0.0.1
+	github.com/infrago/infra v0.0.1
 
-	github.com/bamgoo/base v0.0.1
+	github.com/infrago/base v0.0.1
 
 )
 

@@ -1,6 +1,6 @@
 package view
 
-import . "github.com/bamgoo/base"
+import . "github.com/infrago/base"
 
 func (m *Module) Parse(body Body) (string, error) {
 	if m.instance == nil || m.instance.conn == nil {

@@ -1,2 +1,2 @@
 # view
-bamgoo view module.
+infrago view module.

@@ -10,8 +10,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/bamgoo/bamgoo"
-	. "github.com/bamgoo/base"
+	"github.com/infrago/infra"
+	. "github.com/infrago/base"
 )
 
 type (
@@ -114,7 +114,7 @@ func (p *defaultParser) layoutParse() (string, error) {
 	viewName := ""
 	layoutHtml := ""
 	if strings.Contains(p.layout, "\n") {
-		viewName = bamgoo.Generate("layout")
+		viewName = infra.Generate("layout")
 		layoutHtml = p.layout
 	} else {
 		filename, err := p.findLayoutFile(p.layout)
@@ -157,7 +157,7 @@ func (p *defaultParser) bodyParse(name string, args ...Any) (string, error) {
 	viewName := ""
 	html := ""
 	if strings.Contains(name, "\n") {
-		viewName = bamgoo.Generate("view")
+		viewName = infra.Generate("view")
 		html = name
 	} else {
 		filename, err := p.findBodyFile(name)
@@ -202,7 +202,7 @@ func (p *defaultParser) renderParse(name string, args ...Any) (string, error) {
 	viewName := ""
 	html := ""
 	if strings.Contains(name, "\n") {
-		viewName = bamgoo.Generate("render")
+		viewName = infra.Generate("render")
 		html = name
 	} else {
 		filename, err := p.findRenderFile(name)
@@ -330,8 +330,8 @@ func (p *defaultParser) findRenderFile(name string) (string, error) {
 }
 
 func (p *defaultParser) stat(name string) (fs.FileInfo, error) {
-	if fsys := bamgoo.AssetFS(); fsys != nil {
-		if st, err := bamgoo.AssetStat(name); err == nil {
+	if fsys := infra.AssetFS(); fsys != nil {
+		if st, err := infra.AssetStat(name); err == nil {
 			return st, nil
 		}
 	}
@@ -339,8 +339,8 @@ func (p *defaultParser) stat(name string) (fs.FileInfo, error) {
 }
 
 func (p *defaultParser) readFile(name string) ([]byte, error) {
-	if fsys := bamgoo.AssetFS(); fsys != nil {
-		if bts, err := bamgoo.AssetFile(name); err == nil {
+	if fsys := infra.AssetFS(); fsys != nil {
+		if bts, err := infra.AssetFile(name); err == nil {
 			return bts, nil
 		}
 	}

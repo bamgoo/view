@@ -6,18 +6,18 @@ import (
 	"sync"
 	"time"
 
-	"github.com/bamgoo/bamgoo"
-	. "github.com/bamgoo/base"
+	"github.com/infrago/infra"
+	. "github.com/infrago/base"
 )
 
 func init() {
-	bamgoo.Mount(module)
-	module.RegisterDriver(bamgoo.DEFAULT, &defaultDriver{})
+	infra.Mount(module)
+	module.RegisterDriver(infra.DEFAULT, &defaultDriver{})
 }
 
 var module = &Module{
 	config: Config{
-		Driver: bamgoo.DEFAULT,
+		Driver: infra.DEFAULT,
 		Root:   "asset/views",
 		Shared: "shared",
 		Left:   "{%",
@@ -28,7 +28,7 @@ var module = &Module{
 }
 
 func SetFS(fsys fs.FS) {
-	bamgoo.AssetFS(fsys)
+	infra.AssetFS(fsys)
 }
 
 type (
@@ -90,10 +90,10 @@ func (m *Module) RegisterDriver(name string, driver Driver) {
 		panic("Invalid view driver: " + name)
 	}
 	if name == "" {
-		name = bamgoo.DEFAULT
+		name = infra.DEFAULT
 	}
 
-	if bamgoo.Override() {
+	if infra.Override() {
 		m.drivers[name] = driver
 	} else {
 		if _, ok := m.drivers[name]; !ok {
@@ -115,7 +115,7 @@ func (m *Module) RegisterHelper(name string, helper Helper) {
 	}
 
 	for _, key := range aliases {
-		if bamgoo.Override() {
+		if infra.Override() {
 			m.helpers[key] = helper
 		} else {
 			if _, ok := m.helpers[key]; !ok {
@@ -178,7 +178,7 @@ func (m *Module) Setup() {
 	}
 
 	if m.config.Driver == "" {
-		m.config.Driver = bamgoo.DEFAULT
+		m.config.Driver = infra.DEFAULT
 	}
 	if m.config.Root == "" {
 		m.config.Root = "asset/views"
@@ -240,7 +240,7 @@ func (m *Module) Start() {
 	if m.instance != nil && m.instance.conn != nil {
 		connCount = 1
 	}
-	fmt.Printf("bamgoo view module is running with %d connections, %d helpers.\n", connCount, len(m.helpers))
+	fmt.Printf("infrago view module is running with %d connections, %d helpers.\n", connCount, len(m.helpers))
 }
 
 func (m *Module) Stop() {
