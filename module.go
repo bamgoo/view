@@ -1,13 +1,12 @@
 package view
 
 import (
-	"fmt"
 	"io/fs"
 	"sync"
 	"time"
 
-	"github.com/infrago/infra"
 	. "github.com/infrago/base"
+	"github.com/infrago/infra"
 )
 
 func init() {
@@ -240,7 +239,9 @@ func (m *Module) Start() {
 	if m.instance != nil && m.instance.conn != nil {
 		connCount = 1
 	}
-	fmt.Printf("infrago view module is running with %d connections, %d helpers.\n", connCount, len(m.helpers))
+	infra.Log(infra.LogLevelInfo, "view", "module started", Map{
+		"connections": connCount, "helpers": len(m.helpers),
+	})
 }
 
 func (m *Module) Stop() {
